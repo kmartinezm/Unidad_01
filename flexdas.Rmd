@@ -1,0 +1,660 @@
+---
+title: "Untitled"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+    social: ["twitter","facebook","linkedin"]
+    navbar:
+      - {title: "Metodos y Simulación Estadistica",align = rigth}    
+---
+
+```{r}
+library(flexdashboard)
+library(paqueteMET)
+library(ggplot2)
+library(dplyr)
+library(stringi)
+library(formattable)
+```
+
+```{r transformacion datos}
+# homogenisar texto
+data_cl <- CarreraLuz22 %>%
+  mutate(origen=toupper(stri_trans_general(CarreraLuz22$origen,'Latin-ASCII')))
+
+# transformando los datos nulos en paises 
+data_cl <- data_cl %>%
+  mutate(nacionalidad = ifelse(data_cl$nacionalidad == 0, ifelse(data_cl$origen == 'CALI', 'COL','PAN'),data_cl$nacionalidad))
+
+# transformando las ciudades repetidas
+data_cl <- data_cl %>%
+  mutate(origen= ifelse(data_cl$origen == "BOGOTA D.C","BOGOTA",
+                        ifelse(data_cl$origen == "CALI VALLE","CALI",
+                               ifelse(data_cl$origen == "FLORIDA VA","FLORIDA",data_cl$origen))))
+
+# transformado time a min
+data_cl <- data_cl %>%
+  mutate(timerun = data_cl$timerun/60)
+
+# nueva columna de velocidad por participante
+
+km_carr <- 10000
+
+data_cl <- data_cl %>%
+  mutate(velocidad_ms = (km_carr/data_cl$timerun/60))
+```
+
+```{r subset categorias}
+data_jvn <- subset(data_cl, data_cl$categoria=='1. Juvenil')
+data_abr <- subset(data_cl, data_cl$categoria=='2. Abierta')
+data_vta <- subset(data_cl, data_cl$categoria=='3. Veteranos A')
+data_vtb <- subset(data_cl, data_cl$categoria=='4. Veteranos B')
+data_vtc <- subset(data_cl, data_cl$categoria=='5. Veteranos C')
+```
+
+
+# General {data-icon='fa-list'}
+
+## intro text {.sidebar data-width=250}
+```{r, echo=FALSE, out.width="80%", fig.align = "center"}
+knitr::include_graphics("intercontinentalcali.png")
+```
+<b style = 'color:black;'>**Llega a cali la Carrera Intercontinental 10K de la Luz este 23 de octubre**</b>
+
+**Salida**: Hotel Intercontinental, calle 5, Carrera 6, carrera 4c, carrera1, carrera 4, calle de la escopeta, museo arqueológico la merced, bulevar del rio, puente Ortiz, av 2N, parque lineal rio Cali av2n, calle 25, parque lineal av1n, calle 13, carrera 1 calle 12, carrera 5, calle 10, gobernación del valle, edificio Aristi carrera 9, calle 9 plazoleta de san francisco, bulevar del rio, calle 8, carrera 4, carrera 3ª, parque del peñón, carrera 3, carrera 3ª oeste, calle 5 oeste, carrera 4, av Belalcázar, carrera 2ª oeste, librería nacional, carrera 1c, museo la tertulia, av Colombia, pepe ganga, carrera 3, carrera 2, carrera 3ª, av Colombia, carrera 4, meta hotel intercontinental. [juanchocorrelon.com](https://juanchocorrelon.com/intercontinental-10k-luz-2022/#10k)
+
+##
+### Número de Participantes
+```{r}
+num_prt <- max(data_cl$id)
+num_prt <- as.character(num_prt)
+num_prt <- paste(num_prt, sep= " ","runners")
+valueBox(num_prt,icon='fa-users')
+```
+
+### Edad promedio de los runners
+```{r}
+edd_prom <- mean(data_cl$edad)
+edd_prom <- formattable::comma(edd_prom,digits=0)
+edd_prom <- as.character(edd_prom)
+edd_prom <- paste(edd_prom,sep=" ","años")
+valueBox(edd_prom,icon='fa-eye')
+
+```
+
+### Número de Ciudades participantes
+```{r}
+num_cdd <- data_cl %>% group_by(data_cl$origen) %>% summarise(mean=mean(data_cl$timerun))
+num_cdd <- as.character(nrow(num_cdd))
+num_cdd <- paste(num_cdd,sep=" ","ciudades")
+valueBox(num_cdd,icon='fa-home')
+
+```
+
+### Número de paises participantes
+```{r}
+num_pss <- data_cl %>% group_by(data_cl$nacionalidad) %>% summarise(mean=mean(data_cl$timerun))
+num_pss <- as.character(nrow(num_pss))
+num_pss <- paste(num_pss,sep=" ","paises")
+valueBox(num_pss,icon='fa-globe')
+
+```
+
+### Número de categorias
+```{r}
+num_ctg <- data_cl %>% group_by(data_cl$categoria) %>% summarise(mean=mean(data_cl$timerun))
+num_ctg <- as.character(nrow(num_ctg))
+num_ctg <- paste(num_ctg,sep=" ","categorias")
+valueBox(num_ctg,icon='fa-cubes')
+```
+
+##
+### **Porcentaje de participación por categoria**
+```{r}
+freqc <- data.frame(table(data_cl$categoria))
+colnames(freqc) <- c("Categorias","Frecuencia")
+
+ggplot(freqc,aes(x=2, y=Frecuencia,fill=Categorias))+
+  geom_bar(stat='identity')+
+  geom_text(aes(label=percent(Frecuencia/1922,digits = 0)))+
+  coord_polar("y")+
+  theme_void()+
+  xlim(0.5,2.5)
+```
+
+### **Resultados generales por Categoria**
+```{r}
+ggplot(data_cl,aes(x=data_cl$categoria,y=data_cl$timerun,fill=data_cl$categoria))+
+  geom_boxplot()+
+  theme(legend.position = 'bottom')+
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())+
+  labs(x='',y='Tiempo de Carrera (min)',fill='Categorias')
+```
+
+
+# C. Juvenil {data-icon='fa-line-chart' data-navmenu='Resultados' data-orientation=columns}
+##
+### **Porcentaje de participación por Género**
+```{r}
+freqc_jvn <- data.frame(table(data_jvn$sex))
+colnames(freqc_jvn) <- c("Género","Frecuencia")
+total_jvn <- sum(freqc_jvn$Frecuencia)
+
+ggplot(freqc_jvn,aes(x=2, y=Frecuencia,fill=Género))+
+  geom_bar(stat='identity')+
+  geom_text(aes(label=percent(Frecuencia/total_jvn,digits = 0)))+
+  coord_polar("y")+
+  theme_void()+
+  xlim(0.5,3)
+```
+
+
+### **Tiempo de carrera de la Categoría Juvenil**
+```{r}
+ggplot(data_jvn,aes(x=data_jvn$timerun))+
+  geom_histogram(aes(y=..density..),fill='white',color='black')+
+  geom_density(alpha=.5,fill = "#0072F0")+
+  xlim(c(30,100))+
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())+
+  labs(x='Tiempo de Carrera (min)',y='Densidad')
+```
+
+##
+### **Resultados de los tiempos de carrera por Género**
+```{r}
+ggplot(data_jvn,aes(x=data_jvn$sex,y=data_jvn$timerun,fill=data_jvn$sex))+
+  geom_boxplot()+
+  theme(legend.position = 'bottom')+
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())+
+  labs(x='',y='Tiempo de Carrera (min)',fill='Género')
+```
+
+### **Coorelación entre la Edad y el Tiempo de Carrera**
+```{r}
+pairs(data_jvn[,c(3,5)])
+corr_jvn <- cor(data_jvn[,c(3,5)])
+```
+
+## {data-width=100}
+### Tiempo runner ganador
+```{r}
+tpo_min <- min(data_jvn$timerun)
+tpo_min <- formattable::comma(tpo_min,digits=2)
+tpo_min <- as.character(tpo_min)
+tpo_min <- paste(tpo_min, sep= " ","min")
+valueBox(tpo_min,icon='fa-trophy')
+```
+
+### Velocidad ganador
+```{r}
+vlc_min <- max(data_jvn$velocidad_ms)
+vlc_min <- formattable::comma(vlc_min,digits=2)
+vlc_min <- as.character(vlc_min)
+vlc_min <- paste(vlc_min, sep= " ","m/s")
+
+valueBox(vlc_min,icon='fa-info')
+```
+
+### Número de participantes
+```{r}
+num_pss <- as.character(total_jvn)
+num_pss <- paste(num_pss,sep=" ","runners")
+valueBox(num_pss,icon='fa-users')
+```
+
+### Tiempo promedio
+```{r}
+tpo_prm <- mean(data_jvn$timerun)
+tpo_prm <- formattable::comma(tpo_prm,digits=2)
+tpo_prm <- as.character(tpo_prm)
+tpo_prm <- paste(tpo_prm, sep= " ","min")
+valueBox(tpo_prm,icon='fa-trophy')
+```
+
+### Edad promedio
+```{r}
+edd_prm <- mean(data_jvn$edad)
+edd_prm <- formattable::comma(edd_prm,digits=0)
+edd_prm <- as.character(edd_prm)
+edd_prm <- paste(edd_prm, sep= " ","años")
+
+valueBox(edd_prm,icon='fa-eye')
+```
+
+### Velocidad promedio
+```{r}
+vlc_prm <- mean(data_jvn$velocidad_ms)
+vlc_prm <- formattable::comma(vlc_prm,digits=2)
+vlc_prm <- as.character(vlc_prm)
+vlc_prm <- paste(vlc_prm, sep= " ","m/s")
+
+valueBox(vlc_prm,icon='fa-info')
+```
+
+# C. Abierta {data-icon='fa-bar-chart' data-navmenu='Resultados' data-orientation=columns}
+##
+### **Porcentaje de participación por Género**
+```{r}
+freqc_abr <- data.frame(table(data_abr$sex))
+colnames(freqc_abr) <- c("Género","Frecuencia")
+total_abr <- sum(freqc_abr$Frecuencia)
+
+ggplot(freqc_abr,aes(x=2, y=Frecuencia,fill=Género))+
+  geom_bar(stat='identity')+
+  geom_text(aes(label=percent(Frecuencia/total_abr,digits = 0)))+
+  coord_polar("y")+
+  theme_void()+
+  xlim(0.5,3)
+```
+
+### **Tiempo de carrera de la Categoría Abierta**
+```{r}
+ggplot(data_abr,aes(x=data_abr$timerun))+
+  geom_histogram(aes(y=..density..),fill='white',color='black')+
+  geom_density(alpha=.5,fill = "#0072F0")+
+  xlim(c(30,100))+
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())+
+  labs(x='Tiempo de Carrera (min)',y='Densidad')
+```
+
+
+## 
+### **Resultados de los tiempos de carrera por Género**
+```{r}
+ggplot(data_abr,aes(x=data_abr$sex,y=data_abr$timerun,fill=data_abr$sex))+
+  geom_boxplot()+
+  theme(legend.position = 'bottom')+
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())+
+  labs(x='',y='Tiempo de Carrera (min)',fill='Género')
+```
+
+### **Coorelación entre la Edad y el Tiempo de Carrera**
+```{r}
+pairs(data_abr[,c(3,5)])
+corr_abr <- cor(data_abr[,c(3,5)])
+```
+
+
+## {data-width=100}
+### Tiempo runner ganador
+```{r}
+tpo_min_abr <- min(data_abr$timerun)
+tpo_min_abr <- formattable::comma(tpo_min_abr,digits=2)
+tpo_min_abr <- as.character(tpo_min_abr)
+tpo_min_abr <- paste(tpo_min_abr, sep= " ","min")
+valueBox(tpo_min_abr,icon='fa-trophy')
+```
+
+### Velocidad ganador
+```{r}
+vlc_min_abr <- max(data_abr$velocidad_ms)
+vlc_min_abr <- formattable::comma(vlc_min_abr,digits=2)
+vlc_min_abr <- as.character(vlc_min_abr)
+vlc_min_abr <- paste(vlc_min_abr, sep= " ","m/s")
+
+valueBox(vlc_min_abr,icon='fa-info')
+```
+
+### Número de participantes
+```{r}
+num_pss_abr <- as.character(total_abr)
+num_pss_abr <- paste(num_pss_abr,sep=" ","runners")
+valueBox(num_pss_abr,icon='fa-users')
+```
+
+### Tiempo promedio
+```{r}
+tpo_prm_abr <- mean(data_abr$timerun)
+tpo_prm_abr <- formattable::comma(tpo_prm_abr,digits=2)
+tpo_prm_abr <- as.character(tpo_prm_abr)
+tpo_prm_abr <- paste(tpo_prm_abr, sep= " ","min")
+valueBox(tpo_prm_abr,icon='fa-trophy')
+```
+
+### Edad promedio
+```{r}
+edd_prm_abr <- mean(data_abr$edad)
+edd_prm_abr <- formattable::comma(edd_prm_abr,digits=0)
+edd_prm_abr <- as.character(edd_prm_abr)
+edd_prm_abr <- paste(edd_prm_abr, sep= " ","años")
+
+valueBox(edd_prm_abr,icon='fa-eye')
+```
+
+### Velocidad promedio
+```{r}
+vlc_prm_abr <- mean(data_abr$velocidad_ms)
+vlc_prm_abr <- formattable::comma(vlc_prm_abr,digits=2)
+vlc_prm_abr <- as.character(vlc_prm_abr)
+vlc_prm_abr <- paste(vlc_prm_abr, sep= " ","m/s")
+
+valueBox(vlc_prm_abr,icon='fa-info')
+```
+
+
+# C. Veteranos A {data-icon='fa-area-chart' data-navmenu='Resultados' data-orientation=columns}
+##
+### **Porcentaje de participación por Género**
+```{r}
+freqc_vta <- data.frame(table(data_vta$sex))
+colnames(freqc_vta) <- c("Género","Frecuencia")
+total_vta <- sum(freqc_vta$Frecuencia)
+
+ggplot(freqc_vta,aes(x=2, y=Frecuencia,fill=Género))+
+  geom_bar(stat='identity')+
+  geom_text(aes(label=percent(Frecuencia/total_vta,digits = 0)))+
+  coord_polar("y")+
+  theme_void()+
+  xlim(0.5,3)
+```
+
+### **Tiempo de carrera de la Categoría Veteranos A**
+```{r}
+ggplot(data_vta,aes(x=data_vta$timerun))+
+  geom_histogram(aes(y=..density..),fill='white',color='black')+
+  geom_density(alpha=.5,fill = "#0072F0")+
+  xlim(c(30,100))+
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())+
+  labs(x='Tiempo de Carrera (min)',y='Densidad')
+```
+
+
+## 
+### **Resultados de los tiempos de carrera por Género**
+```{r}
+ggplot(data_vta,aes(x=data_vta$sex,y=data_vta$timerun,fill=data_vta$sex))+
+  geom_boxplot()+
+  theme(legend.position = 'bottom')+
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())+
+  labs(x='',y='Tiempo de Carrera (min)',fill='Género')
+```
+
+### **Coorelación entre la Edad y el Tiempo de Carrera**
+```{r}
+pairs(data_vta[,c(3,5)])
+corr_vta <- cor(data_vta[,c(3,5)])
+```
+
+
+## {data-width=100}
+### Tiempo runner ganador
+```{r}
+tpo_min_vta <- min(data_vta$timerun)
+tpo_min_vta <- formattable::comma(tpo_min_vta,digits=2)
+tpo_min_vta <- as.character(tpo_min_vta)
+tpo_min_vta <- paste(tpo_min_vta, sep= " ","min")
+valueBox(tpo_min_vta,icon='fa-trophy')
+```
+
+### Velocidad ganador
+```{r}
+vlc_min_vta <- max(data_vta$velocidad_ms)
+vlc_min_vta <- formattable::comma(vlc_min_vta,digits=2)
+vlc_min_vta <- as.character(vlc_min_vta)
+vlc_min_vta <- paste(vlc_min_vta, sep= " ","m/s")
+
+valueBox(vlc_min_vta,icon='fa-info')
+```
+
+### Número de participantes
+```{r}
+num_pss_vta <- as.character(total_vta)
+num_pss_vta <- paste(num_pss_vta,sep=" ","runners")
+valueBox(num_pss_vta,icon='fa-users')
+```
+
+### Tiempo promedio
+```{r}
+tpo_prm_vta <- mean(data_vta$timerun)
+tpo_prm_vta <- formattable::comma(tpo_prm_vta,digits=2)
+tpo_prm_vta <- as.character(tpo_prm_vta)
+tpo_prm_vta <- paste(tpo_prm_vta, sep= " ","min")
+valueBox(tpo_prm_vta,icon='fa-trophy')
+```
+
+### Edad promedio
+```{r}
+edd_prm_vta <- mean(data_vta$edad)
+edd_prm_vta <- formattable::comma(edd_prm_vta,digits=0)
+edd_prm_vta <- as.character(edd_prm_vta)
+edd_prm_vta <- paste(edd_prm_vta, sep= " ","años")
+
+valueBox(edd_prm_vta,icon='fa-eye')
+```
+
+### Velocidad promedio
+```{r}
+vlc_prm_vta <- mean(data_vta$velocidad_ms)
+vlc_prm_vta <- formattable::comma(vlc_prm_vta,digits=2)
+vlc_prm_vta <- as.character(vlc_prm_vta)
+vlc_prm_vta <- paste(vlc_prm_vta, sep= " ","m/s")
+
+valueBox(vlc_prm_vta,icon='fa-info')
+```
+
+
+# C. Veteranos B {data-icon='fa-pie-chart' data-navmenu='Resultados' data-orientation=columns}
+##
+### **Porcentaje de participación por Género**
+```{r}
+freqc_vtb <- data.frame(table(data_vtb$sex))
+colnames(freqc_vtb) <- c("Género","Frecuencia")
+total_vtb <- sum(freqc_vtb$Frecuencia)
+
+ggplot(freqc_vtb,aes(x=2, y=Frecuencia,fill=Género))+
+  geom_bar(stat='identity')+
+  geom_text(aes(label=percent(Frecuencia/total_vtb,digits = 0)))+
+  coord_polar("y")+
+  theme_void()+
+  xlim(0.5,3)
+```
+
+### **Tiempo de carrera de la Categoría Veteranos B**
+```{r}
+ggplot(data_vtb,aes(x=data_vtb$timerun))+
+  geom_histogram(aes(y=..density..),fill='white',color='black')+
+  geom_density(alpha=.5,fill = "#0072F0")+
+  xlim(c(30,100))+
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())+
+  labs(x='Tiempo de Carrera (min)',y='Densidad')
+```
+
+
+## 
+### **Resultados de los tiempos de carrera por Género**
+```{r}
+ggplot(data_vtb,aes(x=data_vtb$sex,y=data_vtb$timerun,fill=data_vtb$sex))+
+  geom_boxplot()+
+  theme(legend.position = 'bottom')+
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())+
+  labs(x='',y='Tiempo de Carrera (min)',fill='Género')
+```
+
+### **Coorelación entre la Edad y el Tiempo de Carrera**
+```{r}
+pairs(data_vtb[,c(3,5)])
+corr_vta <- cor(data_vtb[,c(3,5)])
+```
+
+
+## {data-width=100}
+### Tiempo runner ganador
+```{r}
+tpo_min_vtb <- min(data_vtb$timerun)
+tpo_min_vtb <- formattable::comma(tpo_min_vtb,digits=2)
+tpo_min_vtb <- as.character(tpo_min_vtb)
+tpo_min_vtb <- paste(tpo_min_vtb, sep= " ","min")
+valueBox(tpo_min_vtb,icon='fa-trophy')
+```
+
+### Velocidad ganador
+```{r}
+vlc_min_vtb <- max(data_vtb$velocidad_ms)
+vlc_min_vtb <- formattable::comma(vlc_min_vtb,digits=2)
+vlc_min_vtb <- as.character(vlc_min_vtb)
+vlc_min_vtb <- paste(vlc_min_vtb, sep= " ","m/s")
+
+valueBox(vlc_min_vtb,icon='fa-info')
+```
+
+### Número de participantes
+```{r}
+num_pss_vtb <- as.character(total_vtb)
+num_pss_vtb <- paste(num_pss_vtb,sep=" ","runners")
+valueBox(num_pss_vtb,icon='fa-users')
+```
+
+### Tiempo promedio
+```{r}
+tpo_prm_vtb <- mean(data_vtb$timerun)
+tpo_prm_vtb <- formattable::comma(tpo_prm_vtb,digits=2)
+tpo_prm_vtb <- as.character(tpo_prm_vtb)
+tpo_prm_vtb <- paste(tpo_prm_vtb, sep= " ","min")
+valueBox(tpo_prm_vtb,icon='fa-trophy')
+```
+
+### Edad promedio
+```{r}
+edd_prm_vtb <- mean(data_vtb$edad)
+edd_prm_vtb <- formattable::comma(edd_prm_vtb,digits=0)
+edd_prm_vtb <- as.character(edd_prm_vtb)
+edd_prm_vtb <- paste(edd_prm_vtb, sep= " ","años")
+
+valueBox(edd_prm_vtb,icon='fa-eye')
+```
+
+### Velocidad promedio
+```{r}
+vlc_prm_vtb <- mean(data_vtb$velocidad_ms)
+vlc_prm_vtb <- formattable::comma(vlc_prm_vtb,digits=2)
+vlc_prm_vtb <- as.character(vlc_prm_vtb)
+vlc_prm_vtb <- paste(vlc_prm_vtb, sep= " ","m/s")
+
+valueBox(vlc_prm_vtb,icon='fa-info')
+```
+
+
+
+
+# C. Veteranos C {data-icon='fa-user-plus' data-navmenu='Resultados' data-orientation=columns}
+##
+### **Porcentaje de participación por Género**
+```{r}
+freqc_vtc <- data.frame(table(data_vtc$sex))
+colnames(freqc_vtc) <- c("Género","Frecuencia")
+total_vtc <- sum(freqc_vtc$Frecuencia)
+
+ggplot(freqc_vtc,aes(x=2, y=Frecuencia,fill=Género))+
+  geom_bar(stat='identity')+
+  geom_text(aes(label=percent(Frecuencia/total_vtc,digits = 0)))+
+  coord_polar("y")+
+  theme_void()+
+  xlim(0.5,3)
+```
+
+### **Tiempo de carrera de la Categoría Veteranos C**
+```{r}
+ggplot(data_vtc,aes(x=data_vtc$timerun))+
+  geom_histogram(aes(y=..density..),fill='white',color='black')+
+  geom_density(alpha=.5,fill = "#0072F0")+
+  xlim(c(30,100))+
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())+
+  labs(x='Tiempo de Carrera (min)',y='Densidad')
+```
+
+
+## 
+### **Resultados de los tiempos de carrera por Género**
+```{r}
+ggplot(data_vtc,aes(x=data_vtc$sex,y=data_vtc$timerun,fill=data_vtc$sex))+
+  geom_boxplot()+
+  theme(legend.position = 'bottom')+
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())+
+  labs(x='',y='Tiempo de Carrera (min)',fill='Género')
+```
+
+### **Coorelación entre la Edad y el Tiempo de Carrera**
+```{r}
+pairs(data_vtc[,c(3,5)])
+corr_vtc <- cor(data_vtc[,c(3,5)])
+```
+
+
+## {data-width=100}
+### Tiempo runner ganador
+```{r}
+tpo_min_vtc <- min(data_vtc$timerun)
+tpo_min_vtc <- formattable::comma(tpo_min_vtc,digits=2)
+tpo_min_vtc <- as.character(tpo_min_vtc)
+tpo_min_vtc <- paste(tpo_min_vtc, sep= " ","min")
+valueBox(tpo_min_vtc,icon='fa-trophy')
+```
+
+### Velocidad ganador
+```{r}
+vlc_min_vtc <- max(data_vtc$velocidad_ms)
+vlc_min_vtc <- formattable::comma(vlc_min_vtc,digits=2)
+vlc_min_vtc <- as.character(vlc_min_vtc)
+vlc_min_vtc <- paste(vlc_min_vtc, sep= " ","m/s")
+
+valueBox(vlc_min_vtc,icon='fa-info')
+```
+
+### Número de participantes
+```{r}
+num_pss_vtc <- as.character(total_vtc)
+num_pss_vtc <- paste(num_pss_vtc,sep=" ","runners")
+valueBox(num_pss_vtc,icon='fa-users')
+```
+
+### Tiempo promedio
+```{r}
+tpo_prm_vtc <- mean(data_vtc$timerun)
+tpo_prm_vtc <- formattable::comma(tpo_prm_vtc,digits=2)
+tpo_prm_vtc <- as.character(tpo_prm_vtc)
+tpo_prm_vtc <- paste(tpo_prm_vtc, sep= " ","min")
+valueBox(tpo_prm_vtc,icon='fa-trophy')
+```
+
+### Edad promedio
+```{r}
+edd_prm_vtc <- mean(data_vtc$edad)
+edd_prm_vtc <- formattable::comma(edd_prm_vtc,digits=0)
+edd_prm_vtc <- as.character(edd_prm_vtc)
+edd_prm_vtc <- paste(edd_prm_vtc, sep= " ","años")
+
+valueBox(edd_prm_vtc,icon='fa-eye')
+```
+
+### Velocidad promedio
+```{r}
+vlc_prm_vtc <- mean(data_vtc$velocidad_ms)
+vlc_prm_vtc <- formattable::comma(vlc_prm_vtc,digits=2)
+vlc_prm_vtc <- as.character(vlc_prm_vtc)
+vlc_prm_vtc <- paste(vlc_prm_vtc, sep= " ","m/s")
+
+valueBox(vlc_prm_vtc,icon='fa-info')
+```
