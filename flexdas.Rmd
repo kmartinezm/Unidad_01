@@ -123,6 +123,7 @@ ggplot(freqc,aes(x=2, y=Frecuencia,fill=Categorias))+
   xlim(0.5,2.5)
 ```
 
+
 ### **Resultados generales por Categoria**
 ```{r}
 ggplot(data_cl,aes(x=data_cl$categoria,y=data_cl$timerun,fill=data_cl$categoria))+
@@ -136,7 +137,7 @@ ggplot(data_cl,aes(x=data_cl$categoria,y=data_cl$timerun,fill=data_cl$categoria)
 
 
 # C. Juvenil {data-icon='fa-line-chart' data-navmenu='Resultados' data-orientation=columns}
-##
+## {.tabset}
 ### **Porcentaje de participación por Género**
 ```{r}
 freqc_jvn <- data.frame(table(data_jvn$sex))
@@ -149,9 +150,24 @@ ggplot(freqc_jvn,aes(x=2, y=Frecuencia,fill=Género))+
   coord_polar("y")+
   theme_void()+
   xlim(0.5,3)
+freqc_jvn
+
 ```
 
 
+### **Resultados de los tiempos de carrera por Género**
+```{r}
+ggplot(data_jvn,aes(x=data_jvn$sex,y=data_jvn$timerun,fill=data_jvn$sex))+
+  geom_boxplot()+
+  theme(legend.position = 'bottom')+
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())+
+  labs(x='',y='Tiempo de Carrera (min)',fill='Género')
+
+```
+
+## {.tabset}
 ### **Tiempo de carrera de la Categoría Juvenil**
 ```{r}
 ggplot(data_jvn,aes(x=data_jvn$timerun))+
@@ -164,22 +180,11 @@ ggplot(data_jvn,aes(x=data_jvn$timerun))+
   labs(x='Tiempo de Carrera (min)',y='Densidad')
 ```
 
-##
-### **Resultados de los tiempos de carrera por Género**
-```{r}
-ggplot(data_jvn,aes(x=data_jvn$sex,y=data_jvn$timerun,fill=data_jvn$sex))+
-  geom_boxplot()+
-  theme(legend.position = 'bottom')+
-  theme(panel.background = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())+
-  labs(x='',y='Tiempo de Carrera (min)',fill='Género')
-```
-
 ### **Coorelación entre la Edad y el Tiempo de Carrera**
 ```{r}
 pairs(data_jvn[,c(3,5)])
 corr_jvn <- cor(data_jvn[,c(3,5)])
+corr_jvn
 ```
 
 ## {data-width=100}
@@ -239,7 +244,7 @@ valueBox(vlc_prm,icon='fa-info')
 ```
 
 # C. Abierta {data-icon='fa-bar-chart' data-navmenu='Resultados' data-orientation=columns}
-##
+## {.tabset}
 ### **Porcentaje de participación por Género**
 ```{r}
 freqc_abr <- data.frame(table(data_abr$sex))
@@ -252,8 +257,22 @@ ggplot(freqc_abr,aes(x=2, y=Frecuencia,fill=Género))+
   coord_polar("y")+
   theme_void()+
   xlim(0.5,3)
+freqc_abr
 ```
 
+### **Resultados de los tiempos de carrera por Género**
+```{r}
+ggplot(data_abr,aes(x=data_abr$sex,y=data_abr$timerun,fill=data_abr$sex))+
+  geom_boxplot()+
+  theme(legend.position = 'bottom')+
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())+
+  labs(x='',y='Tiempo de Carrera (min)',fill='Género')
+```
+
+
+## {.tabset}
 ### **Tiempo de carrera de la Categoría Abierta**
 ```{r}
 ggplot(data_abr,aes(x=data_abr$timerun))+
@@ -266,23 +285,11 @@ ggplot(data_abr,aes(x=data_abr$timerun))+
   labs(x='Tiempo de Carrera (min)',y='Densidad')
 ```
 
-
-## 
-### **Resultados de los tiempos de carrera por Género**
-```{r}
-ggplot(data_abr,aes(x=data_abr$sex,y=data_abr$timerun,fill=data_abr$sex))+
-  geom_boxplot()+
-  theme(legend.position = 'bottom')+
-  theme(panel.background = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())+
-  labs(x='',y='Tiempo de Carrera (min)',fill='Género')
-```
-
 ### **Coorelación entre la Edad y el Tiempo de Carrera**
 ```{r}
 pairs(data_abr[,c(3,5)])
 corr_abr <- cor(data_abr[,c(3,5)])
+corr_abr
 ```
 
 
@@ -344,7 +351,7 @@ valueBox(vlc_prm_abr,icon='fa-info')
 
 
 # C. Veteranos A {data-icon='fa-area-chart' data-navmenu='Resultados' data-orientation=columns}
-##
+## {.tabset}
 ### **Porcentaje de participación por Género**
 ```{r}
 freqc_vta <- data.frame(table(data_vta$sex))
@@ -357,8 +364,21 @@ ggplot(freqc_vta,aes(x=2, y=Frecuencia,fill=Género))+
   coord_polar("y")+
   theme_void()+
   xlim(0.5,3)
+freqc_vta
 ```
 
+### **Resultados de los tiempos de carrera por Género**
+```{r}
+ggplot(data_vta,aes(x=data_vta$sex,y=data_vta$timerun,fill=data_vta$sex))+
+  geom_boxplot()+
+  theme(legend.position = 'bottom')+
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())+
+  labs(x='',y='Tiempo de Carrera (min)',fill='Género')
+```
+
+## {.tabset}
 ### **Tiempo de carrera de la Categoría Veteranos A**
 ```{r}
 ggplot(data_vta,aes(x=data_vta$timerun))+
@@ -371,23 +391,11 @@ ggplot(data_vta,aes(x=data_vta$timerun))+
   labs(x='Tiempo de Carrera (min)',y='Densidad')
 ```
 
-
-## 
-### **Resultados de los tiempos de carrera por Género**
-```{r}
-ggplot(data_vta,aes(x=data_vta$sex,y=data_vta$timerun,fill=data_vta$sex))+
-  geom_boxplot()+
-  theme(legend.position = 'bottom')+
-  theme(panel.background = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())+
-  labs(x='',y='Tiempo de Carrera (min)',fill='Género')
-```
-
 ### **Coorelación entre la Edad y el Tiempo de Carrera**
 ```{r}
 pairs(data_vta[,c(3,5)])
 corr_vta <- cor(data_vta[,c(3,5)])
+corr_vta
 ```
 
 
@@ -449,7 +457,7 @@ valueBox(vlc_prm_vta,icon='fa-info')
 
 
 # C. Veteranos B {data-icon='fa-pie-chart' data-navmenu='Resultados' data-orientation=columns}
-##
+## {.tabset}
 ### **Porcentaje de participación por Género**
 ```{r}
 freqc_vtb <- data.frame(table(data_vtb$sex))
@@ -462,8 +470,21 @@ ggplot(freqc_vtb,aes(x=2, y=Frecuencia,fill=Género))+
   coord_polar("y")+
   theme_void()+
   xlim(0.5,3)
+freqc_vtb
 ```
 
+### **Resultados de los tiempos de carrera por Género**
+```{r}
+ggplot(data_vtb,aes(x=data_vtb$sex,y=data_vtb$timerun,fill=data_vtb$sex))+
+  geom_boxplot()+
+  theme(legend.position = 'bottom')+
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())+
+  labs(x='',y='Tiempo de Carrera (min)',fill='Género')
+```
+
+## {.tabset}
 ### **Tiempo de carrera de la Categoría Veteranos B**
 ```{r}
 ggplot(data_vtb,aes(x=data_vtb$timerun))+
@@ -477,22 +498,11 @@ ggplot(data_vtb,aes(x=data_vtb$timerun))+
 ```
 
 
-## 
-### **Resultados de los tiempos de carrera por Género**
-```{r}
-ggplot(data_vtb,aes(x=data_vtb$sex,y=data_vtb$timerun,fill=data_vtb$sex))+
-  geom_boxplot()+
-  theme(legend.position = 'bottom')+
-  theme(panel.background = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())+
-  labs(x='',y='Tiempo de Carrera (min)',fill='Género')
-```
-
 ### **Coorelación entre la Edad y el Tiempo de Carrera**
 ```{r}
 pairs(data_vtb[,c(3,5)])
 corr_vta <- cor(data_vtb[,c(3,5)])
+corr_vta
 ```
 
 
@@ -552,11 +562,8 @@ vlc_prm_vtb <- paste(vlc_prm_vtb, sep= " ","m/s")
 valueBox(vlc_prm_vtb,icon='fa-info')
 ```
 
-
-
-
 # C. Veteranos C {data-icon='fa-user-plus' data-navmenu='Resultados' data-orientation=columns}
-##
+## {.tabset}
 ### **Porcentaje de participación por Género**
 ```{r}
 freqc_vtc <- data.frame(table(data_vtc$sex))
@@ -569,8 +576,22 @@ ggplot(freqc_vtc,aes(x=2, y=Frecuencia,fill=Género))+
   coord_polar("y")+
   theme_void()+
   xlim(0.5,3)
+freqc_vtc
 ```
 
+### **Resultados de los tiempos de carrera por Género**
+```{r}
+ggplot(data_vtc,aes(x=data_vtc$sex,y=data_vtc$timerun,fill=data_vtc$sex))+
+  geom_boxplot()+
+  theme(legend.position = 'bottom')+
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())+
+  labs(x='',y='Tiempo de Carrera (min)',fill='Género')
+```
+
+
+## {.tabset}
 ### **Tiempo de carrera de la Categoría Veteranos C**
 ```{r}
 ggplot(data_vtc,aes(x=data_vtc$timerun))+
@@ -583,23 +604,11 @@ ggplot(data_vtc,aes(x=data_vtc$timerun))+
   labs(x='Tiempo de Carrera (min)',y='Densidad')
 ```
 
-
-## 
-### **Resultados de los tiempos de carrera por Género**
-```{r}
-ggplot(data_vtc,aes(x=data_vtc$sex,y=data_vtc$timerun,fill=data_vtc$sex))+
-  geom_boxplot()+
-  theme(legend.position = 'bottom')+
-  theme(panel.background = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())+
-  labs(x='',y='Tiempo de Carrera (min)',fill='Género')
-```
-
 ### **Coorelación entre la Edad y el Tiempo de Carrera**
 ```{r}
 pairs(data_vtc[,c(3,5)])
 corr_vtc <- cor(data_vtc[,c(3,5)])
+corr_vtc
 ```
 
 
