@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "Intercontinental 10k de la Luz"
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
