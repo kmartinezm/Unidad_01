@@ -667,3 +667,32 @@ vlc_prm_vtc <- paste(vlc_prm_vtc, sep= " ","m/s")
 
 valueBox(vlc_prm_vtc,icon='fa-info')
 ```
+
+# Resumen 
+
+## running {.sidebar data-width=500}
+```{r, echo=FALSE, out.width="60%", fig.align = "center"}
+knitr::include_graphics("runner.png")
+```
+
+**El running** se ha transformado en uno de los fenómenos, a escala planetaria, de mayor visibilidad y crecimiento en nuestra contemporaneidad. En el marco de las tendecias globales, se expresa como un estilo de vida relativamente novedoso que da cuenta de singulares y diferenciales apropiaciones (género, clase social, edad, entre otros), pero también de tendencias generales. En efecto, el running envuelve un conjunto de prácticas y concepciones programáticas sobre la vida que son altamente estilizadas por parte de sus adherentes, quienes suelen narrar y exponer sus experiencias (entrenamientos, carreras) movilizando un conjunto de importante de preceptos éticos y estéticos. Por consiguiente, se propone analizar el running como un estilo de vida, a partir de una aproximación etnográfica sistemática que también comtempla recursos autoetnográficos. De esta manera, se busca fundamentar la relevancia de esta categoía analítica para abordar compresivamente el running, entendiéndolo además como una podera tecnología de autogobierno que puede ser apropiada creativamente por quienes adoptan este estilo de vida.
+
+##
+
+### **ANÁLISIS DE LOS RESULTADOS**
+
+La carrera se llevó a cabo el 23 de octubre del 2022, en el horario de la mañana y contó con la distancia de 10K y 5K. **El presente análisis se realizó para la distancia de 10K**, el cual contó con siete pacers que motivaron y guiaron a **1922 corredores** a cumplir su objetivo personal, seis (6) paises participantes y cuarenta y dos (42) ciudades, cinco (5) categorias, Juvenil, Abierta, Veteranos A, Veteranos B y Veteranos C, con una edad promedio de los runners de treinta y siete (37) años.
+
+
+La carrera tuvo como epicentro de salida y llegada la Plazoleta Jairo Varela y recorrió varios de los sitios más emblemáticos de la capital vallecaucana, más especificamente la siguiente ruta:
+
+**Salida**: Hotel Intercontinental, calle 5, Carrera 6, carrera 4c, carrera1, carrera 4, calle de la escopeta, museo arqueológico la merced, bulevar del rio, puente Ortiz, av 2N, parque lineal rio Cali av2n, calle 25, parque lineal av1n, calle 13, carrera 1 calle 12, carrera 5, calle 10, gobernación del valle, edificio Aristi carrera 9, calle 9 plazoleta de san francisco, bulevar del rio, calle 8, carrera 4, carrera 3ª, parque del peñón, carrera 3, carrera 3ª oeste, calle 5 oeste, carrera 4, av Belalcázar, carrera 2ª oeste, librería nacional, carrera 1c, museo la tertulia, av Colombia, pepe ganga, carrera 3, carrera 2, carrera 3ª, av Colombia, carrera 4, meta hotel intercontinental. [juanchocorrelon.com](https://juanchocorrelon.com/intercontinental-10k-luz-2022/#10k)
+
+
+Los resultados muestran que la categoria con mayor porcentaje de participación con un sesenta y un por ciento (61%) fue la categoria Abierta, seguida de la categoria Veteranos A con un veintidos por ciento (22%), Veteranos B con un doce por ciento (12%), Veteranos C con un cuatro por ciento (4%) y Juvenil con un uno por ciento (1%).
+
+
+Así mismo, se evidencia una participación en la categoria juvenil del género masculino de sesenta y tres por ciento (63%) y femenino de treinta y siete por ciento (37%), categoria Abierta cincuenta y siete por ciento (57%) Hombres y cuarenta y tres por ciento (43%) Mujeres, categoria Veteranos A con sesenta y cinco por ciento (65%) Hombres y treinta y cinco por ciento (35%) Mujeres, categoria Veteranos B con sesenta y ocho (68%) Hombres y treinta y dos por ciento (32%) Mujeres, categoria Veteranos C con un setenta y ocho por ciento (78%) Hombres y veintidos por ciento (22%) Mujeres. Cada una de las categorias muestra un mejor rendimiento de llegada para los hombres. Cabe mencionar que en todas las categorias el porcentaje de participación de los hombres es mayor que el de las mujeres.
+
+
+Por ultimo, se realizó la relación entre la edad y rendimiento, con la intención de descubrir si a mayor edad menor rendimiento, sin embargo, los resultados muestran que para la Carrera la Luz del 2022 no se evidencia ninguna corelación entre la edad y el rendimiento, existe una correlacion positiva debil (0.36) en la categoria Veteranos C.
