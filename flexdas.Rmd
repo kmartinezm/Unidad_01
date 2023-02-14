@@ -668,7 +668,7 @@ vlc_prm_vtc <- paste(vlc_prm_vtc, sep= " ","m/s")
 valueBox(vlc_prm_vtc,icon='fa-info')
 ```
 
-# Resumen 
+# Resumen {data-icon='fa-file-text'}
 
 ## running {.sidebar data-width=500}
 ```{r, echo=FALSE, out.width="60%", fig.align = "center"}
@@ -691,6 +691,7 @@ La carrera tuvo como epicentro de salida y llegada la Plazoleta Jairo Varela y r
 
 Los resultados muestran que la categoria con mayor porcentaje de participación con un sesenta y un por ciento (61%) fue la categoria Abierta, seguida de la categoria Veteranos A con un veintidos por ciento (22%), Veteranos B con un doce por ciento (12%), Veteranos C con un cuatro por ciento (4%) y Juvenil con un uno por ciento (1%).
 
+El mejor tiempo se registro en la categoria abierta con 33.13 minutos y una velocidad promedio de 5.03 m/s, para la categoria juvenil se registró 41.67 minutos y una velocidad de 4 m/s, para la categoria Veteranos A se registró 37.30 minutos y una velocidad de 4.47 m/s, para la categoria Veteranos B se registró 37.77 minutos y una velocidad de 4.41 m/s, y por último para la categoria Veteranos C se registró 44.95 minutos y una velocidad de 3.71 m/s.
 
 Así mismo, se evidencia una participación en la categoria juvenil del género masculino de sesenta y tres por ciento (63%) y femenino de treinta y siete por ciento (37%), categoria Abierta cincuenta y siete por ciento (57%) Hombres y cuarenta y tres por ciento (43%) Mujeres, categoria Veteranos A con sesenta y cinco por ciento (65%) Hombres y treinta y cinco por ciento (35%) Mujeres, categoria Veteranos B con sesenta y ocho (68%) Hombres y treinta y dos por ciento (32%) Mujeres, categoria Veteranos C con un setenta y ocho por ciento (78%) Hombres y veintidos por ciento (22%) Mujeres. Cada una de las categorias muestra un mejor rendimiento de llegada para los hombres. Cabe mencionar que en todas las categorias el porcentaje de participación de los hombres es mayor que el de las mujeres.
 
