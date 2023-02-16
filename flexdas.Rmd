@@ -688,6 +688,8 @@ La carrera tuvo como epicentro de salida y llegada la Plazoleta Jairo Varela y r
 
 **Salida**: Hotel Intercontinental, calle 5, Carrera 6, carrera 4c, carrera1, carrera 4, calle de la escopeta, museo arqueológico la merced, bulevar del rio, puente Ortiz, av 2N, parque lineal rio Cali av2n, calle 25, parque lineal av1n, calle 13, carrera 1 calle 12, carrera 5, calle 10, gobernación del valle, edificio Aristi carrera 9, calle 9 plazoleta de san francisco, bulevar del rio, calle 8, carrera 4, carrera 3ª, parque del peñón, carrera 3, carrera 3ª oeste, calle 5 oeste, carrera 4, av Belalcázar, carrera 2ª oeste, librería nacional, carrera 1c, museo la tertulia, av Colombia, pepe ganga, carrera 3, carrera 2, carrera 3ª, av Colombia, carrera 4, meta hotel intercontinental. [juanchocorrelon.com](https://juanchocorrelon.com/intercontinental-10k-luz-2022/#10k)
 
+El análisis inició con el estudio de los datos, donde se evidenció que ciertos campos no se encontraban estandarizado o habían datos nulos, por ejemplo, el campo origen de los runners contenia Bogota, Bogotá, Bogota DC, o el campo nacionalidad se encontraban valores en cero (0), por lo cual, se realizó una etapa de filtrado de los datos.
+
 
 Los resultados muestran que la categoria con mayor porcentaje de participación con un sesenta y un por ciento (61%) fue la categoria Abierta, seguida de la categoria Veteranos A con un veintidos por ciento (22%), Veteranos B con un doce por ciento (12%), Veteranos C con un cuatro por ciento (4%) y Juvenil con un uno por ciento (1%).
 
